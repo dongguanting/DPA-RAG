@@ -6,7 +6,7 @@
 </p>
 
 
-⭐ **We will release the templates, and codes within a month. Thanks for your attention!**
+⭐ **We will release the our codes within a month. Thanks for your attention!**
 
 ## Introduction
  we propose a **D**ual **P**reference **A**lignment for **R**etrieval-**A**ugmented **G**eneration (**DPA-RAG**), a universal framework designed to align diverse preference knowledge within RAG systems. DPA-RAG consists of three key components: 
