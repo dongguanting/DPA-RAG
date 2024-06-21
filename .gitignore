@@ -1,0 +1,10 @@
+data/
+__pycache__/
+logs/
+OPENAI_API_KEY.txt
+connect_openai.py
+temp*
+.vscode/
+roberta_weights/
+*.png
+test*.sh
