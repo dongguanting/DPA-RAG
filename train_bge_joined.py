@@ -33,6 +33,7 @@ class Trainer:
         model,
         train_dataloader,
         valid_dataloader,
+        test_dataloader,
         loss_types,
         optimizer,
         lr_scheduler,
@@ -42,6 +43,7 @@ class Trainer:
         self.model = model
         self.train_dataloader = train_dataloader
         self.valid_dataloader = valid_dataloader
+        self.test_dataloader = test_dataloader
         self.loss_types = loss_types
         self.optimizer = optimizer
         self.lr_scheduler = lr_scheduler
@@ -208,12 +210,14 @@ class Trainer:
                         f"epoch_{t+1}_valid_f1_{(100*valid_f1):0.1f}_model_weights.bin",
                     ),
                 )
+        self.test_loop(self.test_dataloader, dataset_type="Test")
 
 
 def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--train_data_path", type=str)
     parser.add_argument("--valid_data_path", type=str)
+    parser.add_argument("--test_data_path", type=str)
     parser.add_argument("--gpu", type=str, choices=["0", "1"], default="0")
     parser.add_argument("--outdir", type=str)
     parser.add_argument("--tensorboard_log_dir", type=str)
@@ -262,6 +266,11 @@ def main():
     valid_dataloader = DataLoader(
         valid_data, batch_size=batch_size, shuffle=False, collate_fn=collater
     )
+
+    test_data = JoinedDataset(args.valid_data_path)
+    test_dataloader = DataLoader(
+        test_data, batch_size=batch_size, shuffle=False, collate_fn=collater
+    )
     loss_types = []
     if args.cls_loss:
         loss_types.append(BgeJoinedModelLoss.ClaasificationLoss)
@@ -284,6 +293,7 @@ def main():
         model=model,
         train_dataloader=train_dataloader,
         valid_dataloader=valid_dataloader,
+        test_dataloader=test_dataloader,
         loss_types=loss_types,
         optimizer=optimizer,
         lr_scheduler=lr_scheduler,
