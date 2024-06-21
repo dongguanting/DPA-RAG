@@ -32,6 +32,7 @@ class Trainer:
         self,
         model,
         train_dataloader,
+        valid_dataloader,
         loss_types,
         optimizer,
         lr_scheduler,
@@ -40,6 +41,7 @@ class Trainer:
     ) -> None:
         self.model = model
         self.train_dataloader = train_dataloader
+        self.valid_dataloader = valid_dataloader
         self.loss_types = loss_types
         self.optimizer = optimizer
         self.lr_scheduler = lr_scheduler
@@ -155,61 +157,63 @@ class Trainer:
             progress_bar.update(1)
         return total_loss
 
-    def train(self, epoch_num):
+    def test_loop(self, dataloader, dataset_type="Test"):
+        assert dataset_type in ["Train", "Valid", "Test"]
+
+        self.model.eval()
+        tp, fp, fn = 0, 0, 0
+        y0 = y1 = 0
+        with torch.no_grad():
+            for sample in dataloader:
+                X, y = sample["classification"] if dataset_type == "Train" else sample
+                X, y = X.to(self.device), y.to(self.device)
+                pred = self.model(X).argmax(1)
+                tp += torch.sum((pred == 1) & (y == 1)).item()
+                fp += torch.sum((pred == 1) & (y == 0)).item()
+                fn += torch.sum((pred == 0) & (y == 1)).item()
+                y0 += torch.sum(pred == 0).item()
+                y1 += torch.sum(pred == 1).item()
+        try:
+            precision = tp / (tp + fp)
+            recall = tp / (tp + fn)
+        except ZeroDivisionError as e:
+            print(e)
+            print(f"n_y == 0: {y0}\nn_y == 1: {y1}")
+            return 0
+        f1 = 2 * (precision * recall) / (precision + recall)
+        print(f"{dataset_type} dataset precision: {(100*precision):>0.1f}%")
+        print(f"{dataset_type} dataset recall: {(100*recall):>0.1f}%")
+        print(f"{dataset_type} dataset f1: {(100*f1):>0.1f}%")
+        print(f"n_y == 0: {y0}\nn_y == 1: {y1}")
+        return f1
+
+    def train(self, epoch_num, outdir):
         total_loss = 0.0
         best_f1 = 0.0
+        os.makedirs(outdir, exist_ok=True)
         for t in range(epoch_num):
             print(f"Epoch {t+1}/{epoch_num}\n-------------------------------")
             total_loss = self.train_loop(t + 1, total_loss)
-            # train_f1 = test_loop(train_dataloader, model, device, mode="Valid")
-            # writer.add_scalar("f1/train_acc", train_f1, t + 1)
-            # valid_f1 = test_loop(valid_dataloader, model, device, mode="Valid")
-            # writer.add_scalar("f1/valid_f1", valid_f1, t + 1)
-            # if valid_f1 > best_f1:
-            #     best_f1 = valid_f1
-            #     print("saving new weights...\n")
-            #     torch.save(
-            #         model.state_dict(),
-            #         os.path.join(
-            #             args.outdir,
-            #             f"epoch_{t+1}_valid_f1_{(100*valid_f1):0.1f}_model_weights.bin",
-            #         ),
-            #     )
-
-
-# def test_loop(dataloader, model, device, mode="Test"):
-#     assert mode in ["Valid", "Test"]
-
-#     model.eval()
-#     tp, fp, fn = 0, 0, 0
-#     y0 = y1 = 0
-#     with torch.no_grad():
-#         for X, y in dataloader:
-#             X, y = X.to(device), y.to(device)
-#             pred = model(X).argmax(1)
-#             tp += torch.sum((pred == 1) & (y == 1)).item()
-#             fp += torch.sum((pred == 1) & (y == 0)).item()
-#             fn += torch.sum((pred == 0) & (y == 1)).item()
-#             y0 += torch.sum(pred == 0).item()
-#             y1 += torch.sum(pred == 1).item()
-#     try:
-#         precision = tp / (tp + fp)
-#         recall = tp / (tp + fn)
-#     except ZeroDivisionError as e:
-#         print(e)
-#         print(f"n_y == 0: {y0}\nn_y == 1: {y1}")
-#         return 0
-#     f1 = 2 * (precision * recall) / (precision + recall)
-#     print(f"{mode} precision: {(100*precision):>0.1f}%\n")
-#     print(f"{mode} recall: {(100*recall):>0.1f}%\n")
-#     print(f"{mode} f1: {(100*f1):>0.1f}%\n")
-#     print(f"n_y == 0: {y0}\nn_y == 1: {y1}")
-#     return f1
+            train_f1 = self.test_loop(self.train_dataloader, dataset_type="Train")
+            self.writer.add_scalar("f1/train_acc", train_f1, t + 1)
+            valid_f1 = self.test_loop(self.valid_dataloader, dataset_type="Valid")
+            self.writer.add_scalar("f1/valid_f1", valid_f1, t + 1)
+            if valid_f1 > best_f1:
+                best_f1 = valid_f1
+                print("saving new weights...\n")
+                torch.save(
+                    self.model.state_dict(),
+                    os.path.join(
+                        outdir,
+                        f"epoch_{t+1}_valid_f1_{(100*valid_f1):0.1f}_model_weights.bin",
+                    ),
+                )
 
 
 def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--train_data_path", type=str)
+    parser.add_argument("--valid_data_path", type=str)
     parser.add_argument("--gpu", type=str, choices=["0", "1"], default="0")
     parser.add_argument("--outdir", type=str)
     parser.add_argument("--tensorboard_log_dir", type=str)
@@ -240,7 +244,7 @@ def main():
     seed_everything(42)
     learning_rate = 1e-5
     batch_size = 4
-    epoch_num = 1
+    epoch_num = 10
     writer = SummaryWriter(args.tensorboard_log_dir)
     device = f"cuda:{args.gpu}"
 
@@ -248,17 +252,16 @@ def main():
     tokenizer = AutoTokenizer.from_pretrained(checkpoint, model_max_length=512)
 
     train_data = JoinedDataset(args.train_data_path)
-    collater = Collater(tokenizer)
+    collater = Collater(tokenizer, is_train=True)
     train_dataloader = DataLoader(
         train_data, batch_size=batch_size, shuffle=True, collate_fn=collater
     )
 
-    # valid_data = JoinedDataset(
-    #     "/home/wzc2022/dgt_workspace/LLM-Knowledge-alignment-dgt/data/roberta_data/2classes/test.jsonl"
-    # )
-    # valid_dataloader = DataLoader(
-    #     valid_data, batch_size=batch_size, shuffle=False, collate_fn=collater
-    # )
+    valid_data = JoinedDataset(args.valid_data_path)
+    collater = Collater(tokenizer, is_train=False)
+    valid_dataloader = DataLoader(
+        valid_data, batch_size=batch_size, shuffle=False, collate_fn=collater
+    )
     loss_types = []
     if args.cls_loss:
         loss_types.append(BgeJoinedModelLoss.ClaasificationLoss)
@@ -280,6 +283,7 @@ def main():
     trainer = Trainer(
         model=model,
         train_dataloader=train_dataloader,
+        valid_dataloader=valid_dataloader,
         loss_types=loss_types,
         optimizer=optimizer,
         lr_scheduler=lr_scheduler,
@@ -287,7 +291,7 @@ def main():
         writer=writer,
     )
 
-    trainer.train(epoch_num=epoch_num)
+    trainer.train(epoch_num=epoch_num, outdir=args.outdir)
     print("Done!")
 
 

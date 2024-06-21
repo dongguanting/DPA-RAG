@@ -42,12 +42,16 @@ class JoinedDataset(Dataset):
         return len(self.data)
 
     def __getitem__(self, idx):
+        if isinstance(idx, slice):
+            start, stop, step = idx.indices(len(self))
+            return [self.data[i] for i in range(start, stop, step)]
         return self.data[idx]
 
 
 class Collater:
-    def __init__(self, tokenizer) -> None:
+    def __init__(self, tokenizer, is_train) -> None:
         self._tokenizer = tokenizer
+        self.is_train = is_train
 
     def tokenize(self, *args):
         return self._tokenizer(
@@ -57,7 +61,7 @@ class Collater:
             return_tensors="pt",
         )
 
-    def __call__(self, batch_samples):
+    def collate_training_data(self, batch_samples):
         """
         输入数据形式：
         [
@@ -115,3 +119,25 @@ class Collater:
             ),
         }
         return res
+
+    def collate_valid_and_test_data(self, batch_samples):
+        """
+        输入数据形式：
+        [
+           {"question":"", "ctx":"", "category": xx}
+        ]
+        输出数据形式：
+        tokenizer([[query, doc]...]), tensor([label...])
+        """
+        return (
+            self.tokenize(
+                [[sample["question"], sample["ctx"]] for sample in batch_samples]
+            ),
+            torch.tensor([2 - sample["category"] for sample in batch_samples]),
+        )
+
+    def __call__(self, batch_samples):
+        if self.is_train:
+            return self.collate_training_data(batch_samples)
+        else:
+            return self.collate_valid_and_test_data(batch_samples)
