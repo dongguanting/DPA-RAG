@@ -8,3 +8,10 @@ temp*
 roberta_weights/
 *.png
 test*.sh
+bge_weights/
+colbertv2.0/
+rankllama/
+bge/
+bce/
+runs/
+summarize_model/
