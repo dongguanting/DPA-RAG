@@ -24,71 +24,157 @@ from transformers import (
 )
 
 from joined_dataset import JoinedDataset, Collater
-from bge_joined_model import BgeJoinedModel, BgeJoinedModelLoss
+from bge_joined_model import BgeJoinedModel, BgeJoinedModelLoss, WeightsCalculator
 
 
-def get_args():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--train_data_path", type=str)
-    parser.add_argument("--gpu", type=str, choices=["0", "1"], default="0")
-    parser.add_argument("--outdir", type=str)
-    parser.add_argument("--tensorboard_log_dir", type=str)
-    parser.add_argument("--cls_loss", action="store_true")
-    parser.add_argument("--rank_loss", action="store_true")
-    parser.add_argument("--scl_loss", action="store_true")
+class Trainer:
+    def __init__(
+        self,
+        model,
+        train_dataloader,
+        loss_types,
+        optimizer,
+        lr_scheduler,
+        device,
+        writer,
+    ) -> None:
+        self.model = model
+        self.train_dataloader = train_dataloader
+        self.loss_types = loss_types
+        self.optimizer = optimizer
+        self.lr_scheduler = lr_scheduler
+        self.device = device
+        self.writer = writer
+        self.weights_calculator = WeightsCalculator(self.device)
 
-    args = parser.parse_args()
-    print(f"Using device: gpu:{args.gpu}")
+    def calc_cls_loss(self, cls_tokens, labels):
+        outputs = self.model.bge(**cls_tokens).last_hidden_state[:, 0, :]
+        outputs = self.model.classifier(outputs)
+        loss_cls = nn.functional.cross_entropy(outputs, labels)
+        return loss_cls
 
-    return args
+    def calc_rank_loss(self, rank_tokens, batch_size):
+        loss_rank = 0
+        outputs = self.model.bge(**rank_tokens).last_hidden_state[:, 0, :]
+        outputs = self.model.classifier(outputs)[:, 1]
+        for group in range(batch_size):
+            start = group * 4
+            for i in range(start, start + 3):
+                for j in range(i + 1, start + 4):
+                    loss_rank += -nn.functional.logsigmoid(outputs[i] - outputs[j])
+        # C(4,2) * n_groups
+        loss_rank /= 6 * batch_size
+        return loss_rank
 
+    def calc_scl_loss(self, pos_tokens, neg_tokens, batch_size):
+        p_outputs = self.model.bge(**pos_tokens).last_hidden_state[:, 0, :]
+        n_outputs = self.model.bge(**neg_tokens).last_hidden_state[:, 0, :]
+        loss_scl = 0
+        for group in range(batch_size):
+            features = torch.cat(
+                [
+                    p_outputs[group * 2 : group * 2 + 2],
+                    n_outputs[group * 2 : group * 2 + 2],
+                ],
+                dim=0,
+            ).unsqueeze(1)
+            features = nn.functional.normalize(features, dim=-1)
+            labels = torch.tensor([1, 1, 0, 0]).to(features.device)
+            loss_scl += self.model.scl_loss_func(features, labels)
+        loss_scl /= batch_size
+        return loss_scl
 
-def seed_everything(seed=1029):
-    random.seed(seed)
-    os.environ["PYTHONHASHSEED"] = str(seed)
-    np.random.seed(seed)
-    torch.manual_seed(seed)
-    torch.cuda.manual_seed(seed)
-    torch.cuda.manual_seed_all(seed)
-    # some cudnn methods can be random even after fixing the seed
-    # unless you tell it to be deterministic
-    torch.backends.cudnn.deterministic = True
+    def cal_loss(self, classification, rank, positive, negative):
+        """
+        输入数据形式：
+        {
+            "classification": [tokenizer([[query, doc]...]), tensor([label...])]
+            "rank": tokenizer([[query, xx]...])
+            "positive": tokenizer([[query, positive_sample]...])
+            "negative": tokenizer([[query, negative_sample]...])
+        }
+        """
+        losses = []
+        if BgeJoinedModelLoss.ClaasificationLoss in self.loss_types:
+            X, labels = classification
+            loss_cls = self.calc_cls_loss(X, labels)
+            losses.append(loss_cls)
 
+        if BgeJoinedModelLoss.RankLoss in self.loss_types:
+            assert len(rank["input_ids"]) % 4 == 0
+            loss_rank = self.calc_rank_loss(
+                rank, batch_size=len(rank["input_ids"]) // 4
+            )
+            losses.append(loss_rank)
 
-def train_loop(
-    dataloader,
-    model,
-    optimizer,
-    lr_scheduler,
-    epoch,
-    total_loss,
-    writer,
-    device,
-):
-    progress_bar = tqdm(range(len(dataloader)))
-    progress_bar.set_description(f"loss: {0:>7f}")
-    finish_step_num = (epoch - 1) * len(dataloader)
+        if BgeJoinedModelLoss.ContrastiveLoss in self.loss_types:
+            assert (
+                len(positive["input_ids"]) == len(negative["input_ids"])
+                and len(positive["input_ids"]) % 2 == 0
+            )
+            loss_scl = self.calc_scl_loss(
+                positive,
+                negative,
+                batch_size=len(positive["input_ids"]) // 2,
+            )
+            losses.append(loss_scl)
 
-    model.train()
-    for step, sample in enumerate(dataloader, start=1):
-        for k, v in sample.items():
-            if isinstance(v, list):
-                sample[k] = [vi.to(device) for vi in v]
-            else:
-                sample[k] = v.to(device)
-        loss = model(**sample)
-        writer.add_scalar("loss", loss, step + finish_step_num)
+        self.weights_calculator.reset()
+        weights = self.weights_calculator.calc_weights(
+            [self.model.bge.embeddings, self.model.bge.encoder], losses
+        )
+        loss = torch.stack(losses).matmul(weights)
+        return loss
 
-        optimizer.zero_grad()
-        loss.backward()
-        optimizer.step()
-        if lr_scheduler is not None:
-            lr_scheduler.step()
+    def train_loop(self, epoch, total_loss):
+        progress_bar = tqdm(range(len(self.train_dataloader)))
+        progress_bar.set_description(f"loss: {0:>7f}")
+        finish_step_num = (epoch - 1) * len(self.train_dataloader)
 
-        total_loss += loss.item()
-        progress_bar.set_description(f"loss: {total_loss/(finish_step_num + step):>7f}")
-        progress_bar.update(1)
-    return total_loss
+        self.model.train()
+        for step, sample in enumerate(self.train_dataloader, start=1):
+            for k, v in sample.items():
+                if isinstance(v, list):
+                    sample[k] = [vi.to(self.device) for vi in v]
+                else:
+                    sample[k] = v.to(self.device)
+
+            loss = self.cal_loss(**sample)
+            self.writer.add_scalar("loss", loss, step + finish_step_num)
+
+            self.optimizer.zero_grad()
+            loss.backward()
+            self.optimizer.step()
+            if self.lr_scheduler is not None:
+                self.lr_scheduler.step()
+
+            total_loss += loss.item()
+            progress_bar.set_description(
+                f"loss: {total_loss/(finish_step_num + step):>7f}"
+            )
+            progress_bar.update(1)
+        return total_loss
+
+    def train(self, epoch_num):
+        total_loss = 0.0
+        best_f1 = 0.0
+        for t in range(epoch_num):
+            print(f"Epoch {t+1}/{epoch_num}\n-------------------------------")
+            total_loss = self.train_loop(t + 1, total_loss)
+            # train_f1 = test_loop(train_dataloader, model, device, mode="Valid")
+            # writer.add_scalar("f1/train_acc", train_f1, t + 1)
+            # valid_f1 = test_loop(valid_dataloader, model, device, mode="Valid")
+            # writer.add_scalar("f1/valid_f1", valid_f1, t + 1)
+            # if valid_f1 > best_f1:
+            #     best_f1 = valid_f1
+            #     print("saving new weights...\n")
+            #     torch.save(
+            #         model.state_dict(),
+            #         os.path.join(
+            #             args.outdir,
+            #             f"epoch_{t+1}_valid_f1_{(100*valid_f1):0.1f}_model_weights.bin",
+            #         ),
+            #     )
 
 
 # def test_loop(dataloader, model, device, mode="Test"):
@@ -121,12 +207,40 @@ def train_loop(
 #     return f1
 
 
+def get_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--train_data_path", type=str)
+    parser.add_argument("--gpu", type=str, choices=["0", "1"], default="0")
+    parser.add_argument("--outdir", type=str)
+    parser.add_argument("--tensorboard_log_dir", type=str)
+    parser.add_argument("--cls_loss", action="store_true")
+    parser.add_argument("--rank_loss", action="store_true")
+    parser.add_argument("--scl_loss", action="store_true")
+
+    args = parser.parse_args()
+    print(f"Using device: gpu:{args.gpu}")
+
+    return args
+
+
+def seed_everything(seed=1029):
+    random.seed(seed)
+    os.environ["PYTHONHASHSEED"] = str(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
+    # some cudnn methods can be random even after fixing the seed
+    # unless you tell it to be deterministic
+    torch.backends.cudnn.deterministic = True
+
+
 def main():
     args = get_args()
     seed_everything(42)
     learning_rate = 1e-5
     batch_size = 4
-    epoch_num = 10
+    epoch_num = 1
     writer = SummaryWriter(args.tensorboard_log_dir)
     device = f"cuda:{args.gpu}"
 
@@ -163,34 +277,17 @@ def main():
     #     num_training_steps=epoch_num * len(train_dataloader),
     # )
 
-    total_loss = 0.0
-    best_f1 = 0.0
-    for t in range(epoch_num):
-        print(f"Epoch {t+1}/{epoch_num}\n-------------------------------")
-        total_loss = train_loop(
-            train_dataloader,
-            model,
-            optimizer,
-            lr_scheduler,
-            t + 1,
-            total_loss,
-            writer,
-            device,
-        )
-        # train_f1 = test_loop(train_dataloader, model, device, mode="Valid")
-        # writer.add_scalar("f1/train_acc", train_f1, t + 1)
-        # valid_f1 = test_loop(valid_dataloader, model, device, mode="Valid")
-        # writer.add_scalar("f1/valid_f1", valid_f1, t + 1)
-        # if valid_f1 > best_f1:
-        #     best_f1 = valid_f1
-        #     print("saving new weights...\n")
-        #     torch.save(
-        #         model.state_dict(),
-        #         os.path.join(
-        #             args.outdir,
-        #             f"epoch_{t+1}_valid_f1_{(100*valid_f1):0.1f}_model_weights.bin",
-        #         ),
-        #     )
+    trainer = Trainer(
+        model=model,
+        train_dataloader=train_dataloader,
+        loss_types=loss_types,
+        optimizer=optimizer,
+        lr_scheduler=lr_scheduler,
+        device=device,
+        writer=writer,
+    )
+
+    trainer.train(epoch_num=epoch_num)
     print("Done!")
 
 
