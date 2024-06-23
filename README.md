@@ -12,14 +12,13 @@ This is the repository contains core implementations of the **D**ual **P**refere
 
 ## 🍯 Overall Framework
 
- **DPA-RAG** is a universal framework designed to align diverse preference knowledge within RAG system, which consists of three key components: 
- 
-(1) Preference Knowledge Construction: motivated by our preliminary results, we first extract the specific knowledge that significantly affects LLMs' reasoning preferences. Then we introduce five query augmentation strategies and a quality filtering process to synthesize high-quality preference knowledge. 
+DPA-RAG is a universal framework for aligning diverse preference knowledge within RAG systems, consisting of three main components:
 
-(2) Reranker-LLM Alignment: To meet the diverse LLMs' knowledge preferences, we carefully design multi-grained alignment tasks for fine-tuning a preference-aligned reranker. Specifically, we jointly integrate pair-wise, point-wise, and contrastive preference alignment abilities into the reranker via multi-task optimization. By this means, the reranker could provide the necessary knowledge for LLM's inference, achieving external alignment between retriever and LLMs.
+Preference Knowledge Construction: We identify and synthesize high-quality preference knowledge using five query augmentation strategies and a filtering process.
 
-(3) LLM Self-Alignment: To further enable LLMs to concentrate on knowledge aligned with their reasoning preferences, we introduce a pre-aligned phrase prior to the vanilla SFT stage. This stage allows LLMs to capture preference-aligned knowledge from multiple documents, completing the LLM's internal self-alignment.
+Reranker-LLM Alignment: We fine-tune a reranker with multi-grained alignment tasks, integrating pair-wise, point-wise, and contrastive preference alignment, to achieve external alignment between the retriever and LLMs.
 
+LLM Self-Alignment: Prior to the standard SFT stage, we introduce a pre-alignment phase to help LLMs capture preference-aligned knowledge from multiple documents, ensuring internal self-alignment.
 
 <img width="1302" alt="image" src="https://github.com/dongguanting/DPA-RAG/assets/60767110/fde07a6a-fa0d-4099-a6f8-0d16782b7ec4">
 
