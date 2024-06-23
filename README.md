@@ -12,15 +12,18 @@ This is the repository contains core implementations of the **D**ual **P**refere
 
 ## 🍯 Overall Framework
 
-DPA-RAG is a universal framework for aligning diverse preference knowledge within RAG systems, consisting of three main components:
+**DPA-RAG** is a universal framework for aligning diverse preference knowledge within RAG systems, consisting of three main components:
 
-Preference Knowledge Construction: We identify and synthesize high-quality preference knowledge using five query augmentation strategies and a filtering process.
+**Preference Knowledge Construction:** We identify and synthesize high-quality preference knowledge using five query augmentation strategies and a filtering process.
 
-Reranker-LLM Alignment: We fine-tune a reranker with multi-grained alignment tasks, integrating pair-wise, point-wise, and contrastive preference alignment, to achieve external alignment between the retriever and LLMs.
+**Reranker-LLM Alignment:** We fine-tune a reranker with multi-grained alignment tasks, integrating pair-wise, point-wise, and contrastive preference alignment, to achieve external alignment between the retriever and LLMs.
 
-LLM Self-Alignment: Prior to the standard SFT stage, we introduce a pre-alignment phase to help LLMs capture preference-aligned knowledge from multiple documents, ensuring internal self-alignment.
+**LLM Self-Alignment:** Prior to the standard SFT stage, we introduce a pre-alignment phase to help LLMs capture preference-aligned knowledge from multiple documents, ensuring internal self-alignment.
 
 <img width="1302" alt="image" src="https://github.com/dongguanting/DPA-RAG/assets/60767110/fde07a6a-fa0d-4099-a6f8-0d16782b7ec4">
+
+---
+
 
 
 
@@ -68,14 +71,17 @@ python train_bge_joined.py \
 
 Tests are automatically performed on the specified data set after the training is complete.
 
+---
+
 
 ## 🎯 LLM Training
 
-We use the version of [LlaMA-Factory v0.6.3](https://github.com/hiyouga/LLaMA-Factory/releases/tag/v0.6.3). Thanks for their excellent work.
+For LLM Training， we use the [LlaMA-Factory v0.6.3](https://github.com/hiyouga/LLaMA-Factory/releases/tag/v0.6.3). Thanks for their excellent work.
+
+(1) LLM Self Alignment:
 
 
-
-(1) SFT Training:
+(2) SFT Training:
 
 ```bash
 deepspeed --num_gpus=8 train_bash.py \
