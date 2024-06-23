@@ -9,6 +9,9 @@
 This is the repository contains core implementations of the **D**ual **P**reference **A**lignment for **R**etrieval-**A**ugmented **G**eneration (**DPA-RAG**), proposed by [Understand What LLM Needs: Dual Preference Alignment for Retrieval-Augmented Generation]().
 
 
+---
+
+
 ## 🍯 Overall Framework
 
  **DPA-RAG** is a universal framework designed to align diverse preference knowledge within RAG system, which consists of three key components: 
