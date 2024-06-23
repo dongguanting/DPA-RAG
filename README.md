@@ -42,6 +42,7 @@ We present some training data and test data. If you need to modify training data
 ### 3. start training
 ```bash
 python train_bge_joined.py \
+--pretrained_model_path=your/pretrained/bge/path \
 --train_data_path=your/train/data/path \
 --valid_data_path=your/valid/data/path \
 --test_data_path=your/test/data/path \
@@ -59,6 +60,7 @@ You can choose which losses to incorporate when training. For example, if you on
 
 ```bash
 python train_bge_joined.py \
+--pretrained_model_path=your/pretrained/bge/path \
 --train_data_path=your/train/data/path \
 --valid_data_path=your/valid/data/path \
 --test_data_path=your/test/data/path \

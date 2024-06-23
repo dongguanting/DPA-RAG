@@ -114,13 +114,11 @@ class BgeJoinedModelLoss(Enum):
 
 
 class BgeJoinedModel(nn.Module):
-    BGE_MODEL_PATH = "/home/wzc2022/dgt_workspace/LLM-Knowledge-alignment-dgt/bge"
-
-    def __init__(self, loss_types: List[BgeJoinedModelLoss]):
+    def __init__(self, pretrained_model_path, loss_types: List[BgeJoinedModelLoss]):
         assert len(loss_types) > 0
         super(BgeJoinedModel, self).__init__()
         self.loss_types = loss_types
-        self.bge = AutoModel.from_pretrained(self.BGE_MODEL_PATH)
+        self.bge = AutoModel.from_pretrained(pretrained_model_path)
         self.classifier = nn.Linear(1024, 2)
         if BgeJoinedModelLoss.ContrastiveLoss in self.loss_types:
             self.scl_loss_func = SupConLoss()

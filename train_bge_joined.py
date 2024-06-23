@@ -215,6 +215,7 @@ class Trainer:
 
 def get_args():
     parser = argparse.ArgumentParser()
+    parser.add_argument("--pretrained_model_path", type=str)
     parser.add_argument("--train_data_path", type=str)
     parser.add_argument("--valid_data_path", type=str)
     parser.add_argument("--test_data_path", type=str)
@@ -252,7 +253,7 @@ def main():
     writer = SummaryWriter(args.tensorboard_log_dir)
     device = f"cuda:{args.gpu}"
 
-    checkpoint = "/home/wzc2022/dgt_workspace/LLM-Knowledge-alignment-dgt/bge"
+    checkpoint = args.pretrained_model_path
     tokenizer = AutoTokenizer.from_pretrained(checkpoint, model_max_length=512)
 
     train_data = JoinedDataset(args.train_data_path)
@@ -278,7 +279,7 @@ def main():
         loss_types.append(BgeJoinedModelLoss.RankLoss)
     if args.scl_loss:
         loss_types.append(BgeJoinedModelLoss.ContrastiveLoss)
-    model = BgeJoinedModel(loss_types)
+    model = BgeJoinedModel(checkpoint, loss_types)
     model.to(device)
     optimizer = AdamW(model.parameters(), lr=learning_rate)
     lr_scheduler = None
