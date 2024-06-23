@@ -20,7 +20,7 @@
 (3) LLM Self-Alignment: To further enable LLMs to concentrate on knowledge aligned with their reasoning preferences, we introduce a pre-aligned phrase prior to the vanilla SFT stage. This stage allows LLMs to capture preference-aligned knowledge from multiple documents, completing the LLM's internal self-alignment.
 
 
-## :sparkles: Reranker Training
+## :sparkles: Reranker-LLM Alignment
 
 ### 1. clone our codes
 Run the following command from the command line to clone our code from github to local:
