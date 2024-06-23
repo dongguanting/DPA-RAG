@@ -64,3 +64,48 @@ python train_bge_joined.py \
 
 Tests are automatically performed on the specified data set after the training is complete.
 
+
+## 🎯 LLM Training
+
+We use the version of [LlaMA-Factory v0.6.3](https://github.com/hiyouga/LLaMA-Factory/releases/tag/v0.6.3). Thanks for their excellent work.
+
+:sparkles:Tips:
+the difference between our two setups:
+- **Strong-to-Weak Distillation:** we use powerful model as supervision model (e.g., GPT-4, Qwen2-72B, Llama3-70B), and weak model (e.g., Qwen2-7B, Llama3-8B) as base model.
+- **Self-Alignment:** we use the same model (e.g., Qwen2-72B, Llama3-70B) as supervision and base model.
+
+
+(1) SFT Training:
+
+```bash
+deepspeed --num_gpus=8 train_bash.py \
+        --deepspeed $deepspeed_zero3_config_path \
+        --stage sft \
+        --do_train \
+        --use_fast_tokenizer \
+        --flash_attn \
+        --adam_beta1 0.9 \
+        --adam_beta2 0.95 \
+        --model_name_or_path $MODEL_PATH \
+        --dataset $dataset \
+        --template $Template \
+        --finetuning_type full \
+        --output_dir $OUTPUT_PATH \
+        --overwrite_cache \
+        --overwrite_output_dir \
+        --warmup_steps 20 \
+        --weight_decay 0.1 \
+        --per_device_train_batch_size 4 \
+        --gradient_accumulation_steps 4 \
+        --ddp_timeout 9000 \
+        --learning_rate 7e-6 \
+        --lr_scheduler_type "linear" \
+        --logging_steps 1 \
+        --cutoff_len 8192 \
+        --save_steps 200 \
+        --num_train_epochs 3.0 \
+        --plot_loss \
+        --bf16 
+```
+
+
