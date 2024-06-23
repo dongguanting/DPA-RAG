@@ -1,10 +1,8 @@
 ## Understand What LLM Needs: Dual Preference Alignment for Retrieval-Augmented Generation</h2>
 
-<p>
-📃 <a href="">ArXiv Paper</a>
-</p>
+*Guanting Dong, Yutao Zhu, Chenghao Zhang, Zechen Wang, Zhicheng Dou and Ji-Rong Wen*
 
-
+Gaoling School of Artificial Intelligence, Renmin University of China.
 
 This is the repository contains core implementations of the **D**ual **P**reference **A**lignment for **R**etrieval-**A**ugmented **G**eneration (**DPA-RAG**), proposed by [Understand What LLM Needs: Dual Preference Alignment for Retrieval-Augmented Generation]().
 
