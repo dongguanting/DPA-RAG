@@ -5,10 +5,13 @@
 </p>
 
 
-⭐ **We will release the our codes within a month. Thanks for your attention!**
-
 ## Introduction
  we propose a **D**ual **P**reference **A**lignment for **R**etrieval-**A**ugmented **G**eneration (**DPA-RAG**), a universal framework designed to align diverse preference knowledge within RAG systems. DPA-RAG consists of three key components: 
+
+
+## 🍯 Overall Framework
+<img width="1302" alt="image" src="https://github.com/dongguanting/DPA-RAG/assets/60767110/fde07a6a-fa0d-4099-a6f8-0d16782b7ec4">
+
 
 (1) Preference Knowledge Construction: motivated by our preliminary results, we first extract the specific knowledge that significantly affects LLMs' reasoning preferences. Then we introduce five query augmentation strategies and a quality filtering process to synthesize high-quality preference knowledge. 
 
@@ -16,9 +19,6 @@
 
 (3) LLM Self-Alignment: To further enable LLMs to concentrate on knowledge aligned with their reasoning preferences, we introduce a pre-aligned phrase prior to the vanilla SFT stage. This stage allows LLMs to capture preference-aligned knowledge from multiple documents, completing the LLM's internal self-alignment.
 
-
-## 🍯 Overall Framework
-<img width="1302" alt="image" src="https://github.com/dongguanting/DPA-RAG/assets/60767110/fde07a6a-fa0d-4099-a6f8-0d16782b7ec4">
 
 ## :sparkles: Reranker Training
 
