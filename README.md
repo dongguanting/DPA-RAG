@@ -20,7 +20,7 @@
 ## 🍯 Overall Framework
 <img width="1302" alt="image" src="https://github.com/dongguanting/DPA-RAG/assets/60767110/fde07a6a-fa0d-4099-a6f8-0d16782b7ec4">
 
-## Training process
+## :sparkles: Reranker Training
 
 ### 1. clone our codes
 Run the following command from the command line to clone our code from github to local:
@@ -69,10 +69,6 @@ Tests are automatically performed on the specified data set after the training i
 
 We use the version of [LlaMA-Factory v0.6.3](https://github.com/hiyouga/LLaMA-Factory/releases/tag/v0.6.3). Thanks for their excellent work.
 
-:sparkles:Tips:
-the difference between our two setups:
-- **Strong-to-Weak Distillation:** we use powerful model as supervision model (e.g., GPT-4, Qwen2-72B, Llama3-70B), and weak model (e.g., Qwen2-7B, Llama3-8B) as base model.
-- **Self-Alignment:** we use the same model (e.g., Qwen2-72B, Llama3-70B) as supervision and base model.
 
 
 (1) SFT Training:
