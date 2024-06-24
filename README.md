@@ -14,9 +14,9 @@ This is the repository contains core implementations of the **DPA-RAG**, propose
 
 **DPA-RAG** is a universal framework for aligning diverse preference knowledge within RAG systems, consisting of three main components:
 
-**Preference Knowledge Construction:** We identify and synthesize high-quality preference knowledge using five query augmentation strategies and a filtering process.
+**Preference Knowledge Construction:** We identify and synthesize high-quality preference knowledge.
 
-**Reranker-LLM Alignment:** We fine-tune a reranker with multi-grained alignment tasks to achieve external alignment between the retriever and LLMs.
+**Reranker-LLM Alignment:** We fine-tune a reranker with multi-grained alignment tasks to achieve alignment between the retriever and LLMs.
 
 **LLM Self-Alignment:** Prior to the standard SFT stage, we introduce a pre-alignment phase to help LLMs capture preference-aligned knowledge from multiple documents.
 
