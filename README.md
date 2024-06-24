@@ -136,9 +136,7 @@ For LLM Training，we use the [LlaMA-Factory v0.6.3](https://github.com/hiyouga/
 
 (1) Pre-aligned Training:
 
-We provide the NQ dataset at the prealigned stage [here](https://drive.google.com/drive/folders/1JFCGpnmqfMHGh6X9cMJFtTxVduHkiQXi?usp=sharing). Note that the prealigned data we provide does not include augmented data, please merge augmentation data to unlock more powerful alignment capabilities. You can construct other datasets on your own following our NQ's data format.
-
-Please replace the parameters with $ symbols with your own parameters.
+We provide the NQ dataset at the prealigned stage [here](https://drive.google.com/drive/folders/1JFCGpnmqfMHGh6X9cMJFtTxVduHkiQXi?usp=sharing). Note that the prealigned data we provide does not include augmented data, please merge augmentation data to unlock more powerful alignment capabilities. You can construct other datasets on your own following our NQ's data format. Please replace the parameters with $ symbols with your own parameters.
 
 ```bash
 deepspeed --num_gpus=8 train_bash.py \
