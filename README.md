@@ -38,11 +38,17 @@ We design a three-step method to gradually mine, augment, and filter out high-qu
 
 We also provide 1k samples of NQ dataset for each augmentation, which can be directly downloaded in [here](https://drive.google.com/drive/folders/1fbehvvNzas0VitdBky-pDLDZ_vLSHI81).
 
-- We present some training data and test data. If you need to modify training data and test data, follow a similar data format without missing the necessary fields.
+- Please use use [mDeBERTa](https://huggingface.co/MoritzLaurer/mDeBERTa-v3-base-xnli-multilingual-nli-2mil7) as NLI model for consistency filtering.
 
-''' json
+Data format:
+```json
 {"instruction": "what does jamaican people speak?", "back_instruction": ["What language do Jamaican people speak?", "Given their diverse cultural background and official language policies, what language do Jamaican people predominantly speak in everyday life as well as in formal settings?", "What do Jamaicans speak?"]}
-'''
+```
+
+bash:
+```bash
+python NLI_filter.py
+```
 
 
 
@@ -54,6 +60,9 @@ git clone https://github.com/dongguanting/DPA-RAG.git
 ```
 
 ### 3. start training
+
+We present some training data and test data. If you need to modify training data and test data, follow a similar data format without missing the necessary fields.
+
 ```bash
 python train_bge_joined.py \
 --pretrained_model_path=your/pretrained/bge/path \
