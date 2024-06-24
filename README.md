@@ -36,10 +36,13 @@ We design a three-step method to gradually mine, augment, and filter out high-qu
    
 ![image](https://github.com/dongguanting/DPA-RAG/assets/60767110/cbefab86-74c8-46ea-afc7-5f94b5ca100c)
 
-We also provide 1k samples of NQ dataset for each augmentation method as examples, which can be directly downloaded in [here](https://drive.google.com/drive/folders/1fbehvvNzas0VitdBky-pDLDZ_vLSHI81).
+We also provide 1k samples of NQ dataset for each augmentation, which can be directly downloaded in [here](https://drive.google.com/drive/folders/1fbehvvNzas0VitdBky-pDLDZ_vLSHI81).
 
-We present some training data and test data. If you need to modify training data and test data, follow a similar data format without missing the necessary fields.
+- We present some training data and test data. If you need to modify training data and test data, follow a similar data format without missing the necessary fields.
 
+''' json
+{"instruction": "what does jamaican people speak?", "back_instruction": ["What language do Jamaican people speak?", "Given their diverse cultural background and official language policies, what language do Jamaican people predominantly speak in everyday life as well as in formal settings?", "What do Jamaicans speak?"]}
+'''
 
 
 
