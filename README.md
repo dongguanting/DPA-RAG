@@ -14,11 +14,11 @@ This is the repository contains core implementations of the **DPA-RAG**, propose
 
 **DPA-RAG** is a universal framework for aligning diverse preference knowledge within RAG systems, consisting of three main components:
 
-**Preference Knowledge Construction:** We identify and synthesize high-quality preference knowledge.
+- **Preference Knowledge Construction:** We identify and synthesize high-quality preference knowledge.
 
-**Reranker-LLM Alignment:** We fine-tune a reranker with multi-grained tasks to achieve alignment between the retriever and LLMs.
+- **Reranker-LLM Alignment:** We fine-tune a reranker with multi-grained tasks to achieve alignment between the retriever and LLMs.
 
-**LLM Self-Alignment:** Before SFT stage, we introduce a pre-alignment phase to help LLMs capture preference-aligned knowledge.
+- **LLM Self-Alignment:** Before SFT stage, we introduce a pre-alignment phase to help LLMs capture preference-aligned knowledge.
 
 <img width="1302" alt="image" src="https://github.com/dongguanting/DPA-RAG/assets/60767110/fde07a6a-fa0d-4099-a6f8-0d16782b7ec4">
 
