@@ -44,11 +44,11 @@ Please use GPT-3.5-turbo to perform five query augmentation strategies for each 
    
 ![image](https://github.com/dongguanting/DPA-RAG/assets/60767110/cbefab86-74c8-46ea-afc7-5f94b5ca100c)
 
-• Rephrasing. Rephrase the original query with the same intention.
-• Complexity. Increase the semantic complexity of the original query.
-• Decomposition. Decompose the original query into several sub-problems.
-• Constraint. Add more conditional and constrained statements to the original query.
-• SPARQL. Rewrite the original query based on the SPARQL syntax and generate it directly
+- Rephrasing. Rephrase the original query with the same intention.
+- Complexity. Increase the semantic complexity of the original query.
+- Decomposition. Decompose the original query into several sub-problems.
+- Constraint. Add more conditional and constrained statements to the original query.
+- SPARQL. Rewrite the original query based on the SPARQL syntax and generate it directly
 
 We also provide **1k samples of NQ dataset** for each augmentation, which can be directly downloaded in [here](https://drive.google.com/drive/folders/1fbehvvNzas0VitdBky-pDLDZ_vLSHI81).
 
