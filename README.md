@@ -55,7 +55,7 @@ We also provide **1k samples of NQ dataset** for each augmentation, which can be
 
 
 ### 3, NLI Filtering
-Please use use [mDeBERTa](https://huggingface.co/MoritzLaurer/mDeBERTa-v3-base-xnli-multilingual-nli-2mil7) as NLI model for consistency filtering.
+Please use use [mDeBERTa](https://huggingface.co/MoritzLaurer/mDeBERTa-v3-base-xnli-multilingual-nli-2mil7) as NLI model for consistency filtering between original and augmented samples.
 
 **Data format:**
 
