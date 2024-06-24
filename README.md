@@ -28,16 +28,27 @@ This is the repository contains core implementations of the **D**ual **P**refere
 
 
 ## :sparkles: Reranker-LLM Alignment
+## 💻 Data preparation
+We design a three-step method to gradually mine, augment, and filter out high-quality preference knowledge of LLMs:
 
-### 1. clone our codes
+1. You can follow the process of **Preference Knowledge Construction** to extract documents labeled “Aligned Knowledge” or “Unaligned Knowledge” from different base model.
+2. Please use GPT-3.5-turbo as generator to perform five novel query augmentation strategies for each query, the prompt template is as follow:
+   
+![image](https://github.com/dongguanting/DPA-RAG/assets/60767110/cbefab86-74c8-46ea-afc7-5f94b5ca100c)
+
+We also provide 1k samples of NQ dataset for each augmentation method as examples, which can be directly downloaded in [here]([https://drive.google.com/drive/folders/1UnWOB0zApioYOJ4GuS3JKSWAkkeDXxQv?usp=drive_link](https://drive.google.com/drive/folders/1fbehvvNzas0VitdBky-pDLDZ_vLSHI81?usp=sharing)).
+
+We present some training data and test data. If you need to modify training data and test data, follow a similar data format without missing the necessary fields.
+
+
+
+
+### 1. 
 Run the following command from the command line to clone our code from github to local:
 
 ```bash
 git clone https://github.com/dongguanting/DPA-RAG.git
 ```
-### 2. prepare data
-
-We present some training data and test data. If you need to modify training data and test data, follow a similar data format without missing the necessary fields.
 
 ### 3. start training
 ```bash
@@ -76,7 +87,8 @@ Tests are automatically performed on the specified data set after the training i
 ---
 
 
-## 🎯 LLM Training
+## 🌈  LLM Training
+
 
 For LLM Training， we use the [LlaMA-Factory v0.6.3](https://github.com/hiyouga/LLaMA-Factory/releases/tag/v0.6.3). Thanks for their excellent work.
 
