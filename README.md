@@ -35,8 +35,8 @@ This is the repository contains core implementations of the **DPA-RAG**, propose
 We design a three-step method to gradually mine, augment, and filter out high-quality preference knowledge of LLMs:
 
 ### 1. Preference Knowledge Constructio
-First, please use DPR to retrieve the top 100 passages for each samples in different datasets. 
-Then, you can follow the process of **Preference Knowledge Construction** section to extract documents labeled “Aligned Knowledge” or “Unaligned Knowledge” from different base model.
+For each samples in different datasets, you need to use [DPR](https://github.com/facebookresearch/DPR) to retrieve the top 100 passages. 
+Then, please follow the process of **Preference Knowledge Construction** section to extract documents labeled “Aligned Knowledge” or “Unaligned Knowledge” from different base model.
 
 
 ### 2. Diverse Query Augmentation
@@ -50,7 +50,7 @@ Please use GPT-3.5-turbo to perform five query augmentation strategies for each 
 • Constraint. Add more conditional and constrained statements to the original query.
 • SPARQL. Rewrite the original query based on the SPARQL syntax and generate it directly
 
-We also provide 1k samples of NQ dataset for each augmentation, which can be directly downloaded in [here](https://drive.google.com/drive/folders/1fbehvvNzas0VitdBky-pDLDZ_vLSHI81).
+We also provide **1k samples of NQ dataset** for each augmentation, which can be directly downloaded in [here](https://drive.google.com/drive/folders/1fbehvvNzas0VitdBky-pDLDZ_vLSHI81).
 
 
 ### 3, NLI Filtering
