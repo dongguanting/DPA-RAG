@@ -136,6 +136,7 @@ For LLM Training， we use the [LlaMA-Factory v0.6.3](https://github.com/hiyouga
 
 (1) Pre-aligned Training:
 We provide the NQ dataset at the prealigned stage [here](https://drive.google.com/drive/folders/1JFCGpnmqfMHGh6X9cMJFtTxVduHkiQXi?usp=sharing). Please construct other datasets on your own following NQ's data format.
+Note that the prealigned data we provide does not include augmented data, please merge augmentation data to unlock more powerful alignment capabilities.
 
 Please replace the parameters with $ symbols with your own parameters.
 
@@ -172,7 +173,8 @@ deepspeed --num_gpus=8 train_bash.py \
 
 (2) SFT Training:
 
-For the vanilla SFT training, you can find the original training data with top3 passages (with out augmented data) [here](https://drive.google.com/drive/folders/1AFMQX_wlAd4idWdxyBySe9yiaFQPGv0X?usp=sharing)
+You can find the original training data with top3 passages (with out data augmented) [here](https://drive.google.com/drive/folders/1dCCpAVPiwPgjOhuKGcyonwgfr2kntJHZ?usp=sharing).
+Please merge your augmentation data to unlock more powerful alignment capabilities.
 
 ```bash
 deepspeed --num_gpus=8 train_bash.py \
@@ -205,4 +207,24 @@ deepspeed --num_gpus=8 train_bash.py \
         --bf16 
 ```
 
+(3) Inference
 
+You can find our reranked test data with top3 passages [here](https://drive.google.com/drive/folders/1HFAEGX5A5aVFNuWMzA1zLoRtfE-FyoTB?usp=sharing). For WebQSP dataset. we only provide train and test data with top2 passages for aligning.
+
+```bash
+ CUDA_VISIBLE_DEVICES=0 python src/train_bash.py \
+     --stage sft \
+     --model_name_or_path $path_to_llama_model \
+     --do_predict \
+     --flash_attn no \
+     --dataset $dataset \
+     --template $template \
+     --output_dir $OUTPUT_PATH \
+     --per_device_eval_batch_size 8 \
+     --max_samples 150 \
+     --cutoff_len 2048 \
+     --predict_with_generate \
+     --fp16 \
+     --quantization_bit 4 \
+     --max_new_tokens 20
+```
