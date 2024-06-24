@@ -134,7 +134,7 @@ For LLM Training，we use the [LlaMA-Factory v0.6.3](https://github.com/hiyouga/
 
 
 
-(1) Pre-aligned Training:
+**(1) Pre-aligned Training:**
 
 We provide the NQ dataset at the prealigned stage [here](https://drive.google.com/drive/folders/1JFCGpnmqfMHGh6X9cMJFtTxVduHkiQXi?usp=sharing). Note that the prealigned data we provide does not include augmented data, please merge augmentation data to unlock more powerful alignment capabilities. You can construct other datasets on your own following our NQ's data format. Please replace the parameters with $ symbols with your own parameters.
 
@@ -169,7 +169,7 @@ deepspeed --num_gpus=8 train_bash.py \
         --bf16 
 ```
 
-(2) SFT Training:
+**(2) SFT Training:**
 
 You can find the original training data with top3 passages (with out data augmented) [here](https://drive.google.com/drive/folders/1dCCpAVPiwPgjOhuKGcyonwgfr2kntJHZ?usp=sharing).
 Please merge your augmentation data to unlock more powerful alignment capabilities.
@@ -205,7 +205,7 @@ deepspeed --num_gpus=8 train_bash.py \
         --bf16 
 ```
 
-(3) Inference
+**(3) Inference**
 
 You can find our reranked test data with top3 passages [here](https://drive.google.com/drive/folders/1HFAEGX5A5aVFNuWMzA1zLoRtfE-FyoTB?usp=sharing). For WebQSP dataset. we only provide train and test data with top2 passages for aligning.
 
@@ -226,3 +226,7 @@ You can find our reranked test data with top3 passages [here](https://drive.goog
      --quantization_bit 4 \
      --max_new_tokens 20
 ```
+
+## Citation
+
+
