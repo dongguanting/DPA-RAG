@@ -227,6 +227,9 @@ You can find our reranked test data with top3 passages [here](https://drive.goog
      --max_new_tokens 20
 ```
 
+---
+
 ## Citation
 
+If you find this work helpful for your research, please kindly cite it.
 
