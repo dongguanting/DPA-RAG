@@ -56,16 +56,20 @@ We also provide **1k samples of NQ dataset** for each augmentation, which can be
 ### 3, NLI Filtering
 Please use use [mDeBERTa](https://huggingface.co/MoritzLaurer/mDeBERTa-v3-base-xnli-multilingual-nli-2mil7) as NLI model for consistency filtering.
 
-Data format:
+**Data format:**
+
 ```json
 {"instruction": "what does jamaican people speak?", "back_instruction": ["What language do Jamaican people speak?", "Given their diverse cultural background and official language policies, what language do Jamaican people predominantly speak in everyday life as well as in formal settings?", "What do Jamaicans speak?"]}
 ```
 
-fliter process:
+**Fliter process:**
+
 ```bash
 python NLI_filter.py
 ```
 
+
+---
 
 ## :sparkles: Reranker-LLM Alignment
 
