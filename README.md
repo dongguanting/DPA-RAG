@@ -2,7 +2,7 @@
 
 *Guanting Dong, Yutao Zhu, Chenghao Zhang, Zechen Wang, Zhicheng Dou and Ji-Rong Wen*
 
-Gaoling School of Artificial Intelligence, Renmin University of China.
+*Gaoling School of Artificial Intelligence, Renmin University of China.*
 
 This is the repository contains core implementations of the **DPA-RAG**, proposed by [Understand What LLM Needs: Dual Preference Alignment for Retrieval-Augmented Generation]().
 
