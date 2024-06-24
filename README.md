@@ -27,39 +27,54 @@ This is the repository contains core implementations of the **D**ual **P**refere
 
 
 
-## :sparkles: Reranker-LLM Alignment
+
+
 ## 💻 Data preparation
 We design a three-step method to gradually mine, augment, and filter out high-quality preference knowledge of LLMs:
 
-- You can follow the process of **Preference Knowledge Construction** to extract documents labeled “Aligned Knowledge” or “Unaligned Knowledge” from different base model.
-- Please use GPT-3.5-turbo to perform five query augmentation strategies for each query, the prompt template is as follow:
+### 1. Preference Knowledge Constructio
+First, please use DPR to retrieve the top 100 passages for each samples in different datasets. 
+Then, you can follow the process of **Preference Knowledge Construction** section to extract documents labeled “Aligned Knowledge” or “Unaligned Knowledge” from different base model.
+
+
+### 2. Diverse Query Augmentation
+Please use GPT-3.5-turbo to perform five query augmentation strategies for each query, the prompt template and requirements are as follow:
    
 ![image](https://github.com/dongguanting/DPA-RAG/assets/60767110/cbefab86-74c8-46ea-afc7-5f94b5ca100c)
 
+• Rephrasing. Rephrase the original query with the same intention.
+• Complexity. Increase the semantic complexity of the original query.
+• Decomposition. Decompose the original query into several sub-problems.
+• Constraint. Add more conditional and constrained statements to the original query.
+• SPARQL. Rewrite the original query based on the SPARQL syntax and generate it directly
+
 We also provide 1k samples of NQ dataset for each augmentation, which can be directly downloaded in [here](https://drive.google.com/drive/folders/1fbehvvNzas0VitdBky-pDLDZ_vLSHI81).
 
-- Please use use [mDeBERTa](https://huggingface.co/MoritzLaurer/mDeBERTa-v3-base-xnli-multilingual-nli-2mil7) as NLI model for consistency filtering.
+
+### 3, NLI Filtering
+Please use use [mDeBERTa](https://huggingface.co/MoritzLaurer/mDeBERTa-v3-base-xnli-multilingual-nli-2mil7) as NLI model for consistency filtering.
 
 Data format:
 ```json
 {"instruction": "what does jamaican people speak?", "back_instruction": ["What language do Jamaican people speak?", "Given their diverse cultural background and official language policies, what language do Jamaican people predominantly speak in everyday life as well as in formal settings?", "What do Jamaicans speak?"]}
 ```
 
-bash:
+fliter process:
 ```bash
 python NLI_filter.py
 ```
 
 
+## :sparkles: Reranker-LLM Alignment
 
-### 1. 
+### 1. Code clone
 Run the following command from the command line to clone our code from github to local:
 
 ```bash
 git clone https://github.com/dongguanting/DPA-RAG.git
 ```
 
-### 3. start training
+### 3. Start training
 
 We present some training data and test data. If you need to modify training data and test data, follow a similar data format without missing the necessary fields.
 
