@@ -130,7 +130,7 @@ Tests are automatically performed on the specified data set after the training i
 ## 🌈  LLM Training
 
 
-For LLM Training， we use the [LlaMA-Factory v0.6.3](https://github.com/hiyouga/LLaMA-Factory/releases/tag/v0.6.3). Thanks for their excellent work.
+For LLM Training，we use the [LlaMA-Factory v0.6.3](https://github.com/hiyouga/LLaMA-Factory/releases/tag/v0.6.3) for Llama2-7B/13B, Mistral-7B, Qwen1.5-0.5B/4B/7B/14B, Phi2-2.7B. Moreover, we use the [LlaMA-Factory v0.8.1](https://github.com/hiyouga/LLaMA-Factory/releases/tag/v0.8.1) for Qwen2-7B, Llama3-8B. Thanks for their excellent work.
 
 
 
