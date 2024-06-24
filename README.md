@@ -45,7 +45,6 @@ Please use **GPT-3.5-turbo** to perform five augmentations for each query, the p
    
 ![image](https://github.com/dongguanting/DPA-RAG/assets/60767110/cbefab86-74c8-46ea-afc7-5f94b5ca100c)
 
-> 
 - Rephrasing. Rephrase the original query with the same intention.
 - Complexity. Increase the semantic complexity of the original query.
 - Decomposition. Decompose the original query into several sub-problems.
