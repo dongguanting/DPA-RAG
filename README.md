@@ -4,7 +4,7 @@
 
 Gaoling School of Artificial Intelligence, Renmin University of China.
 
-This is the repository contains core implementations of the **D**ual **P**reference **A**lignment for **R**etrieval-**A**ugmented **G**eneration (**DPA-RAG**), proposed by [Understand What LLM Needs: Dual Preference Alignment for Retrieval-Augmented Generation]().
+This is the repository contains core implementations of the **DPA-RAG**, proposed by [Understand What LLM Needs: Dual Preference Alignment for Retrieval-Augmented Generation]().
 
 
 ---
