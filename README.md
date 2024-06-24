@@ -63,7 +63,7 @@ Please use use [mDeBERTa](https://huggingface.co/MoritzLaurer/mDeBERTa-v3-base-x
 {
 "instruction": "what does jamaican people speak?",
 "back_instruction": ["What language do Jamaican people speak?",
-"Given their diverse cultural background and official language policies,
+"Given their diverse cultural background and official language policies",
 "what language do Jamaican people predominantly speak in everyday life as well as in formal settings?",
 "What do Jamaicans speak?"]
 }
