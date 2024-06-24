@@ -171,7 +171,7 @@ deepspeed --num_gpus=8 train_bash.py \
 
 **(2) SFT Training:**
 
-You can find the original training data with top3 passages (with out data augmented) [here](https://drive.google.com/drive/folders/1dCCpAVPiwPgjOhuKGcyonwgfr2kntJHZ?usp=sharing).
+You can find the original training data with top3 passages (w/o data augmented) [here](https://drive.google.com/drive/folders/1dCCpAVPiwPgjOhuKGcyonwgfr2kntJHZ?usp=sharing).
 Please merge your augmentation data to unlock more powerful alignment capabilities.
 
 ```bash
