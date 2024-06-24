@@ -36,6 +36,7 @@ We design a three-step method to gradually mine, augment, and filter out high-qu
 
 ### 1. Preference Knowledge Constructio
 For each samples in different datasets, you need to use [DPR](https://github.com/facebookresearch/DPR) to retrieve the top 100 passages. 
+
 Then, please follow the process of **Preference Knowledge Construction** section to extract documents labeled “Aligned Knowledge” or “Unaligned Knowledge” from different base model.
 
 
@@ -125,10 +126,47 @@ Tests are automatically performed on the specified data set after the training i
 
 For LLM Training， we use the [LlaMA-Factory v0.6.3](https://github.com/hiyouga/LLaMA-Factory/releases/tag/v0.6.3). Thanks for their excellent work.
 
-(1) LLM Self Alignment:
 
+
+(1) Pre-aligned Training:
+We provide the NQ dataset at the prealigned stage [here](https://drive.google.com/drive/folders/1JFCGpnmqfMHGh6X9cMJFtTxVduHkiQXi?usp=sharing). Please construct other datasets on your own following NQ's data format.
+
+Please replace the parameters with $ symbols with your own parameters.
+
+```bash
+deepspeed --num_gpus=8 train_bash.py \
+        --deepspeed $deepspeed_zero3_config_path \
+        --stage sft \
+        --do_train \
+        --use_fast_tokenizer \
+        --flash_attn \
+        --adam_beta1 0.9 \
+        --adam_beta2 0.95 \
+        --model_name_or_path $MODEL_PATH \
+        --dataset $dataset \
+        --template $Template \
+        --finetuning_type full \
+        --output_dir $OUTPUT_PATH \
+        --overwrite_cache \
+        --overwrite_output_dir \
+        --warmup_steps 20 \
+        --weight_decay 0.1 \
+        --per_device_train_batch_size 4 \
+        --gradient_accumulation_steps 4 \
+        --ddp_timeout 9000 \
+        --learning_rate 7e-6 \
+        --lr_scheduler_type "linear" \
+        --logging_steps 1 \
+        --cutoff_len 8192 \
+        --save_steps 200 \
+        --num_train_epochs 3.0 \
+        --plot_loss \
+        --bf16 
+```
 
 (2) SFT Training:
+
+For the vanilla SFT training, you can find the original training data with top3 passages (with out augmented data) [here](https://drive.google.com/drive/folders/1AFMQX_wlAd4idWdxyBySe9yiaFQPGv0X?usp=sharing)
 
 ```bash
 deepspeed --num_gpus=8 train_bash.py \
