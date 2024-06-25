@@ -32,7 +32,7 @@ This is the repository contains core implementations of the **DPA-RAG**, propose
 
 
 ## 💻 Data preparation
-We design a three-step method to gradually mine, augment, and filter out high-quality preference knowledge of LLMs:
+We design a three-step method to gradually mine, augment, and filter out high-quality preference knowledge:
 
 ### 1. Preference Knowledge Constructio
 For each samples in different datasets, you need to use [DPR](https://github.com/facebookresearch/DPR) to retrieve the top 100 passages. 
