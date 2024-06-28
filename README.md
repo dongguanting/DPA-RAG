@@ -5,7 +5,23 @@
 
 *Gaoling School of Artificial Intelligence, Renmin University of China.*
 
-This is the repository contains core implementations of the **DPA-RAG**, proposed by [Understand What LLM Needs: Dual Preference Alignment for Retrieval-Augmented Generation]().
+This is the repository contains core implementations of the **DPA-RAG**, proposed by [Understand What LLM Needs: Dual Preference Alignment for Retrieval-Augmented Generation](https://arxiv.org/abs/2406.18676).
+
+
+If you find this work helpful for your research, please kindly cite it.
+
+
+```bibtex
+@misc{dong2024understandllmneedsdual,
+      title={Understand What LLM Needs: Dual Preference Alignment for Retrieval-Augmented Generation}, 
+      author={Guanting Dong and Yutao Zhu and Chenghao Zhang and Zechen Wang and Zhicheng Dou and Ji-Rong Wen},
+      year={2024},
+      eprint={2406.18676},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL},
+      url={https://arxiv.org/abs/2406.18676}, 
+}
+```
 
 
 ---
@@ -228,9 +244,5 @@ You can find our reranked test data with top3 passages [here](https://drive.goog
      --max_new_tokens 20
 ```
 
----
 
-## Citation
-
-If you find this work helpful for your research, please kindly cite it.
 
