@@ -1,6 +1,12 @@
 
 ## Understand What LLM Needs: Dual Preference Alignment for Retrieval-Augmented Generation</h2>
 
+
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/understand-what-llm-needs-dual-preference/knowledge-base-question-answering-on-1)](https://paperswithcode.com/sota/knowledge-base-question-answering-on-1?p=understand-what-llm-needs-dual-preference)
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/understand-what-llm-needs-dual-preference/question-answering-on-natural-questions)](https://paperswithcode.com/sota/question-answering-on-natural-questions?p=understand-what-llm-needs-dual-preference)
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/understand-what-llm-needs-dual-preference/question-answering-on-triviaqa)](https://paperswithcode.com/sota/question-answering-on-triviaqa?p=understand-what-llm-needs-dual-preference)
+
+
 *Guanting Dong, Yutao Zhu, Chenghao Zhang, Zechen Wang, Zhicheng Dou and Ji-Rong Wen*
 
 *Gaoling School of Artificial Intelligence, Renmin University of China.*
