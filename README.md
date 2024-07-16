@@ -20,14 +20,11 @@ If you find this work helpful for your research, please kindly cite it.
 
 
 ```bibtex
-@misc{dong2024understandllmneedsdual,
-      title={Understand What LLM Needs: Dual Preference Alignment for Retrieval-Augmented Generation}, 
-      author={Guanting Dong and Yutao Zhu and Chenghao Zhang and Zechen Wang and Zhicheng Dou and Ji-Rong Wen},
-      year={2024},
-      eprint={2406.18676},
-      archivePrefix={arXiv},
-      primaryClass={cs.CL},
-      url={https://arxiv.org/abs/2406.18676}, 
+@article{dong2024understand,
+  title={Understand What LLM Needs: Dual Preference Alignment for Retrieval-Augmented Generation},
+  author={Dong, Guanting and Zhu, Yutao and Zhang, Chenghao and Wang, Zechen and Dou, Zhicheng and Wen, Ji-Rong},
+  journal={arXiv preprint arXiv:2406.18676},
+  year={2024}
 }
 ```
 
