@@ -21,10 +21,24 @@ If you find this work helpful for your research, please kindly cite it.
 
 ```bibtex
 @article{dong2024understand,
-  title={Understand What LLM Needs: Dual Preference Alignment for Retrieval-Augmented Generation},
-  author={Dong, Guanting and Zhu, Yutao and Zhang, Chenghao and Wang, Zechen and Dou, Zhicheng and Wen, Ji-Rong},
-  journal={arXiv preprint arXiv:2406.18676},
-  year={2024}
+  author       = {Guanting Dong and
+                  Yutao Zhu and
+                  Chenghao Zhang and
+                  Zechen Wang and
+                  Zhicheng Dou and
+                  Ji{-}Rong Wen},
+  title        = {Understand What {LLM} Needs: Dual Preference Alignment for Retrieval-Augmented
+                  Generation},
+  journal      = {CoRR},
+  volume       = {abs/2406.18676},
+  year         = {2024},
+  url          = {https://doi.org/10.48550/arXiv.2406.18676},
+  doi          = {10.48550/ARXIV.2406.18676},
+  eprinttype    = {arXiv},
+  eprint       = {2406.18676},
+  timestamp    = {Mon, 22 Jul 2024 14:28:34 +0200},
+  biburl       = {https://dblp.org/rec/journals/corr/abs-2406-18676.bib},
+  bibsource    = {dblp computer science bibliography, https://dblp.org}
 }
 ```
 
