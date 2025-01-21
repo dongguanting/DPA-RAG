@@ -42,6 +42,12 @@ If you find this work helpful for your research, please kindly cite it.
 }
 ```
 
+## 💥 News
+- [01/2025] 🔥 Our paper has been accepted by **WWW 2025**.
+
+- [05/2024] 🔥 We open-source all our code and sampled data of ***DPA-RAG***. Please check out our [reposity](https://github.com/dongguanting/DPA-RAG). 
+
+- [05/2024] 🔥 We introduced ***DPA-RAG***, a universal framework for aligning diverse preference knowledge within RAG systems. Check out the [paper](https://arxiv.org/abs/2406.18676). 
 
 ---
 
